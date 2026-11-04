@@ -587,3 +587,4 @@
 /home/username/projects/ShopInventory/ShopInventory-backend/ShopInventory.Api/bin/Debug/net10.0/runtimes/win-arm64/native/msalruntime_arm64.dll
 /home/username/projects/ShopInventory/ShopInventory-backend/ShopInventory.Api/bin/Debug/net10.0/runtimes/win-x64/native/msalruntime.dll
 /home/username/projects/ShopInventory/ShopInventory-backend/ShopInventory.Api/bin/Debug/net10.0/runtimes/win-x86/native/msalruntime_x86.dll
+/home/username/projects/ShopInventory/ShopInventory-backend/ShopInventory.Api/obj/Debug/net10.0/ShopInventory.Api.sourcelink.json

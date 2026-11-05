@@ -21,9 +21,10 @@ public class ProductsController : ControllerBase
         [FromQuery] int pageSize = 10,
         [FromQuery] string sortBy = "name",
         [FromQuery] string sortOrder = "asc",
-        [FromQuery] string searchInput = "")
+        [FromQuery] string searchInput = "",
+        [FromQuery] int? categoryId = null)
     {
-        return Ok(await _service.GetProducts(page, pageSize, sortBy, sortOrder, searchInput));
+        return Ok(await _service.GetProducts(page, pageSize, sortBy, sortOrder, searchInput, categoryId));
     }
 
     [HttpGet("{id:int}")]

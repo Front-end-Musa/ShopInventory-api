@@ -44,6 +44,15 @@ public class CategoriesController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteCategory(int id)
     {
-        return await _service.DeleteCategory(id) ? NoContent() : NotFound();
+        var result = await _service.DeleteCategory(id);
+        return result switch
+        {
+            CategoryDeletionResult.Deleted => NoContent(),
+            CategoryDeletionResult.NotFound => NotFound(),
+            _ => Problem(
+                statusCode: StatusCodes.Status409Conflict,
+                title: "Category contains products",
+                detail: "Reassign or remove all products before deleting this category.")
+        };
     }
 }

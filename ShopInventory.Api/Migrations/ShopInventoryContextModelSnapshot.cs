@@ -106,7 +106,7 @@ namespace ShopInventory.Api.Migrations
                     b.HasOne("ShopInventory.Api.Models.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");

@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using ShopInventory.Api.Data;
 using ShopInventory.Api.DTOs.Categories;
 using ShopInventory.Api.Models.Entities;
 
 namespace ShopInventory.Api.Services;
+
+public enum CategoryDeletionResult { Deleted, NotFound, InUse }
 
 public class CategoriesService
 {
@@ -65,17 +68,36 @@ public class CategoriesService
         return true;
     }
 
-    public async Task<bool> DeleteCategory(int id)
+    public async Task<CategoryDeletionResult> DeleteCategory(int id)
     {
         var category = await _context.Category.FindAsync(id);
         if (category is null)
         {
-            return false;
+            return CategoryDeletionResult.NotFound;
+        }
+
+        if (await _context.Products.AnyAsync(product => product.CategoryId == id))
+        {
+            return CategoryDeletionResult.InUse;
         }
 
         _context.Category.Remove(category);
-        await _context.SaveChangesAsync();
-        return true;
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException exception) when (
+            exception.InnerException is PostgresException
+            {
+                SqlState: PostgresErrorCodes.ForeignKeyViolation,
+                ConstraintName: "FK_Products_Category_CategoryId"
+            })
+        {
+            _context.Entry(category).State = EntityState.Unchanged;
+            return CategoryDeletionResult.InUse;
+        }
+
+        return CategoryDeletionResult.Deleted;
     }
 
     private static CategoryResponseDto ToResponse(Category category) => new()

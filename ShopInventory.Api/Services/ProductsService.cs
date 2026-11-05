@@ -20,13 +20,13 @@ public class ProductsService
         int pageSize = 10,
         string sortBy = "name",
         string sortOrder = "asc",
-        string searchInput = "")
+        string searchInput = "",
+        int? categoryId = null)
     {
         page = Math.Max(page, 1);
         pageSize = Math.Clamp(pageSize, 1, 100);
         var descending = string.Equals(sortOrder, "desc", StringComparison.OrdinalIgnoreCase);
 
-        var totalCount = await _context.Products.CountAsync();
         var query = _context.Products.AsNoTracking();
 
         if (!string.IsNullOrWhiteSpace(searchInput))
@@ -38,6 +38,13 @@ public class ProductsService
                 EF.Functions.ILike(p.SKU, $"%{term}%") ||
                 EF.Functions.ILike(p.Description!, $"%{term}%"));
         }
+
+        if (categoryId.HasValue)
+        {
+            query = query.Where(product => product.CategoryId == categoryId.Value);
+        }
+
+        var totalCount = await query.CountAsync();
 
         query = sortBy.ToLowerInvariant() switch
         {

@@ -12,6 +12,8 @@ public class ShopInventoryContext: DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<InventorySnapshot>().HasKey(snapshot => snapshot.Date);
+        modelBuilder.Entity<InventorySnapshot>().Property(snapshot => snapshot.InventoryValue).HasPrecision(20, 2);
         modelBuilder.Entity<Product>()
             .HasOne(product => product.Category)
             .WithMany(category => category.Products)
@@ -19,6 +21,7 @@ public class ShopInventoryContext: DbContext
             .OnDelete(DeleteBehavior.Restrict);
     }
 
+    public DbSet<InventorySnapshot> InventorySnapshots { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null;
     public DbSet<Category> Category { get; set; } = null;
 }

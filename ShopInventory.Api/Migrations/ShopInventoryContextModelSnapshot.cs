@@ -48,6 +48,31 @@ namespace ShopInventory.Api.Migrations
                     b.ToTable("Category");
                 });
 
+            modelBuilder.Entity("ShopInventory.Api.Models.Entities.InventorySnapshot", b =>
+                {
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("InventoryValue")
+                        .HasPrecision(20, 2)
+                        .HasColumnType("numeric(20,2)");
+
+                    b.Property<long>("Quantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Timezone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Date");
+
+                    b.ToTable("InventorySnapshots");
+                });
+
             modelBuilder.Entity("ShopInventory.Api.Models.Entities.Product", b =>
                 {
                     b.Property<int>("Id")

@@ -7,6 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddOptions<AnalyticsOptions>().BindConfiguration("Analytics")
+    .Validate(options => System.Text.RegularExpressions.Regex.IsMatch(options.Currency, "^[A-Z]{3}$"), "Currency must be an ISO currency code")
+    .Validate(options => TimeZoneInfo.TryFindSystemTimeZoneById(options.Timezone, out _), "Timezone must be valid")
+    .ValidateOnStart();
+builder.Services.AddScoped<AnalyticsService>();
+builder.Services.AddSingleton<SalesAnalyticsSource>();
+builder.Services.AddHostedService<InventorySnapshotWorker>();
 builder.Services.AddScoped<ProductsService>();
 builder.Services.AddScoped<CategoriesService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
